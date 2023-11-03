@@ -17,4 +17,4 @@ services:
         SERVER_URL: ${SERVER_URL}
     ports:
      - target: 80
-       published: 8000
+       published: 81
