@@ -6,7 +6,7 @@ pipeline {
             steps {
                 dir('lbg-car-react-starter') {
                     checkout scm
-                    sh 'docker build -t za-front-end-image -f Dockerfile .'
+                    sh 'docker build -t za-front-end-image -f lbg-car-react-starter/Dockerfile .'
                 }
             }
         }
@@ -15,7 +15,7 @@ pipeline {
             steps {
                 dir('lbg-car-spring-app-starter') {
                     checkout scm
-                    sh 'docker build -t za-back-end-image -f Dockerfile .'
+                    sh 'docker build -t za-back-end-image -f lbg-car-spring-app-starter/Dockerfile .'
                 }
             }
         }
