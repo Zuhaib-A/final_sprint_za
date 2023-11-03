@@ -4,17 +4,17 @@ services:
     image: zuhaibali/sprint-front-end
     build:
       context: ./lbg-car-react-starter
-      args:
-        SERVER_URL: ${SERVER_URL}
     ports:
      - target: 80
        published: 80
+    environment:
+      SERVER_URL: ${SERVER_URL}
   back-end:
     image: zuhaibali/sprint-back-end
     build:
       context: ./lbg-car-spring-app-starter
-      args:
-        SERVER_URL: ${SERVER_URL}
     ports:
      - target: 80
        published: 81
+    environment:
+      SERVER_URL: ${SERVER_URL}
