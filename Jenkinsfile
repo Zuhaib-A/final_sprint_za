@@ -7,6 +7,7 @@ pipeline {
                 script {
                     checkout scm
                     dir('final_sprint_za/lbg-car-react-starter') {
+                        sh 'ls'
                         sh 'docker build -t za-front-end-image .'
                     }
                 }
@@ -24,6 +25,7 @@ pipeline {
                 script {
                     checkout scm
                     dir('final_sprint_za/lbg-car-spring-app-starter') {
+                        sh 'ls'
                         sh 'docker build -t za-back-end-image .'
                     }
                 }
