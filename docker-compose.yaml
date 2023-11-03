@@ -10,7 +10,7 @@ services:
   back-end:
     image: zuhaibali/sprint-back-end
     build:
-      context: ./lbg-car-sprint-app-starter
+      context: ./lbg-car-spring-app-starter
     ports:
      - target: 80
        published: 8000
