@@ -1,18 +1,20 @@
-FROM node:19-alpine
+# Use an official Node.js 16 image
+FROM node:16-alpine
 
-# change into a folder called /app
+# Change into a directory called /app
 WORKDIR /app
 
-# only copy package.json
+# Only copy package.json
 COPY package.json .
 
-# download the project dependencies
+# Download project dependencies
 RUN npm install
 
-# copy everything from the react app folder to the /app folder in the container
+# Copy everything from the React app folder to the /app folder in the container
 COPY . .
 
-# package up the react project in the /app directory
+# Package up the React project in the /app directory
 RUN npm run build
 
+# Define the command to start your application (adjust as needed)
 CMD ["npm", "run", "start"]
