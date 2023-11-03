@@ -1,5 +1,5 @@
 # Stage 1: Build the React app
-FROM node:19-alpine as build
+FROM node:16-alpine as build
 
 # Change into a folder called /app
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 ARG SERVER_URL=localhost
 
 # Copy the script to set the environment variable
-COPY set_env.sh .
+COPY 
 
 # Make the script executable and execute it
 RUN chmod +x set_env.sh
