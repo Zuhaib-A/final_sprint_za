@@ -1,40 +1,52 @@
 pipeline {
+    environment {
+        registry = "zuhaibali/sprintproject"
+        registryCredentials = "dockerhub-credentials"
+        dockerImage = ""
+    }
+    
     agent any
-
+    
     stages {
         stage('Build Front-End') {
             steps {
                 script {
-                    checkout scm
                     dir('final_sprint_za/lbg-car-react-starter') {
-                        sh 'ls'
-                        sh 'docker build -t za-front-end-image .'
+                        dockerImage = docker.build(registry)
                     }
                 }
             }
         }
 
-        stage('Deploy Front-End') {
+        stage('Push Front-End to Docker Hub') {
             steps {
-                sh 'docker run -d -p 80:80 za-front-end-image'
+                script {
+                    docker.withRegistry('', registryCredentials) {
+                        dockerImage.push("${env.BUILD_NUMBER}-front-end")
+                        dockerImage.push("latest-front-end")
+                    }
+                }
             }
         }
 
         stage('Build Back-End') {
             steps {
                 script {
-                    checkout scm
                     dir('final_sprint_za/lbg-car-spring-app-starter') {
-                        sh 'ls'
-                        sh 'docker build -t za-back-end-image .'
+                        dockerImage = docker.build(registry)
                     }
                 }
             }
         }
 
-        stage('Deploy Back-End') {
+        stage('Push Back-End to Docker Hub') {
             steps {
-                sh 'docker run -d -p 81:81 za-back-end-image'
+                script {
+                    docker.withRegistry('', registryCredentials) {
+                        dockerImage.push("${env.BUILD_NUMBER}-back-end")
+                        dockerImage.push("latest-back-end")
+                    }
+                }
             }
         }
     }
