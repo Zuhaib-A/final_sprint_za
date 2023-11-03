@@ -1,23 +1,14 @@
-# Use an official Maven image as the build stage
+# Use an official Maven image to build the Spring Boot application
 FROM maven:3.8.4-openjdk-11 AS build
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the Maven Wrapper files into the container
-COPY mvnw mvnw.cmd .mvn/ ./
+# Copy the project source code and pom.xml into the container
+COPY . .
 
-# Copy the project configuration files (pom.xml and settings.xml, if needed)
-COPY pom.xml .
-
-# Resolve and download project dependencies using the Maven Wrapper
-RUN ./mvnw dependency:go-offline
-
-# Copy the rest of the application source code
-COPY src/ ./src/
-
-# Build the Spring Boot application
-RUN ./mvnw package -DskipTests
+# Build the Spring Boot application using Maven
+RUN mvn package -DskipTests
 
 # Use an official OpenJDK image as the runtime stage
 FROM openjdk:11-jre-slim
