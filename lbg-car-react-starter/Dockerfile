@@ -1,5 +1,5 @@
 # stage 1
-FROM node:19-alpine as build
+FROM node:16-alpine as build
 
 # change into a folder called /app
 WORKDIR /app
