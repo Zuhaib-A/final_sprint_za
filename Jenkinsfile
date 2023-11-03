@@ -1,36 +1,41 @@
-pipeline{
- environment {
- registry = "zuhaibali/sprintproject"
-        registryCredentials = "dockerhub_id"
-        dockerImage = ""
-    }
+pipeline {
     agent any
-        stages {
-            stage ('Build Docker Image'){
-                steps{
-                    script {
-                        dockerImage = docker.build(registry)
-                    }
-                }
-            }
 
-            stage ("Push to Docker Hub"){
-                steps {
-                    script {
-                        docker.withRegistry('', registryCredentials) {
-                            dockerImage.push("${env.BUILD_NUMBER}")
-                            dockerImage.push("latest")
-                        }
-                    }
-                }
-            }
+    stages {
+        stage('Build Front-End') {
+            steps {
+                script {
+                    // Checkout your front-end code from your repository
+                    checkout scm
 
-            stage ("Clean up"){
-                steps {
-                    script {
-                        sh 'docker image prune --all --force --filter "until=48h"'
-                           }
+                    // Build the front-end Docker image
+                    sh 'docker build -t za-front-end-image -f lbg-car-react-starter/Dockerfile .'
                 }
             }
         }
+
+        stage('Build Back-End') {
+            steps {
+                script {
+                    // Checkout your back-end code from your repository
+                    checkout scm
+
+                    // Build the back-end Docker image
+                    sh 'docker build -t za-back-end-image -f lbg-car-spring-app-starter/Dockerfile .'
+                }
+            }
+        }
+
+        stage('Deploy Containers') {
+            steps {
+                script {
+                    // Deploy the front-end container
+                    sh 'docker run -d -p 80:80 front-end-image'
+
+                    // Deploy the back-end container
+                    sh 'docker run -d -p 8080:8080 back-end-image'
+                }
+            }
+        }
+    }
 }
