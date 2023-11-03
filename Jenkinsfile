@@ -1,25 +1,24 @@
 pipeline {
     agent any
-
     stages {
-        stage('Build Front-End') {
+        stage('Build and Deploy Containers') {
             steps {
-                checkout scm
-                sh 'docker build -t za-front-end-image -f lbg-car-react-starter/Dockerfile .'
-            }
-        }
+                script {
+                    // Checkout your code from the repository
+                    checkout scm
 
-        stage('Build Back-End') {
-            steps {
-                checkout scm
-                sh 'docker build -t za-back-end-image -f lbg-car-spring-app-starter/Dockerfile .'
-            }
-        }
+                    // Build and deploy front-end
+                    dir('final_sprint_za/lbg-car-react-starter') {
+                        sh 'docker build -t za-front-end-image -f Dockerfile .'
+                        sh 'docker run -d -p 80:80 za-front-end-image'
+                    }
 
-        stage('Deploy Containers') {
-            steps {
-                sh 'docker run -d -p 80:80 za-front-end-image'
-                sh 'docker run -d -p 81:81 za-back-end-image'
+                    // Build and deploy back-end
+                    dir('final_sprint_za/lbg-car-spring-app-starter') {
+                        sh 'docker build -t za-back-end-image -f Dockerfile .'
+                        sh 'docker run -d -p 81:81 za-back-end-image'
+                    }
+                }
             }
         }
     }
