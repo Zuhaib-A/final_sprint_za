@@ -1,32 +1,39 @@
-# Use an official Node.js 16 image for building React app
-FROM node:16-alpine as builder
+# Stage 1: Build the React app
+FROM node:19-alpine as build
 
-# Change into a directory called /app
+# Change into a folder called /app
 WORKDIR /app
 
 # Only copy package.json
 COPY package.json .
 
-# Download project dependencies
+# Download the project dependencies
 RUN npm install
 
 # Copy everything from the React app folder to the /app folder in the container
 COPY . .
 
+# Set the SERVER_URL using an ARG (default value is "localhost")
+ARG SERVER_URL=localhost
+
+# Copy the script to set the environment variable
+COPY set_env.sh .
+
+# Make the script executable and execute it
+RUN chmod +x set_env.sh
+RUN ./set_env.sh
+
 # Package up the React project in the /app directory
 RUN npm run build
 
-# Use an official Nginx image
-FROM nginx:latest
+# Stage 2: Serve the React app using Nginx
+FROM nginx:1.23-alpine
 
-# Remove the default Nginx configuration file
-RUN rm /etc/nginx/conf.d/default.conf
+# Copy the built React app from the previous stage to the Nginx web root
+COPY --from=build /app/build /usr/share/nginx/html
 
-# Copy your custom Nginx configuration file to the container
-COPY nginx.conf /etc/nginx/conf.d/
-
-# Copy the built React app to the Nginx web root
-COPY --from=builder /app/build /usr/share/nginx/html
+# Copy your custom Nginx configuration
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80
 EXPOSE 80
