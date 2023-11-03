@@ -4,37 +4,26 @@ pipeline {
     stages {
         stage('Build Front-End') {
             steps {
-                script {
-                    // Checkout your front-end code from your repository
+                dir('lbg-car-react-starter') {
                     checkout scm
-
-                    // Build the front-end Docker image
-                    sh 'docker build -t za-front-end-image -f lbg-car-react-starter/Dockerfile .'
+                    sh 'docker build -t za-front-end-image -f Dockerfile .'
                 }
             }
         }
 
         stage('Build Back-End') {
             steps {
-                script {
-                    // Checkout your back-end code from your repository
+                dir('lbg-car-spring-app-starter') {
                     checkout scm
-
-                    // Build the back-end Docker image
-                    sh 'docker build -t za-back-end-image -f lbg-car-spring-app-starter/Dockerfile .'
+                    sh 'docker build -t za-back-end-image -f Dockerfile .'
                 }
             }
         }
 
         stage('Deploy Containers') {
             steps {
-                script {
-                    // Deploy the front-end container
-                    sh 'docker run -d -p 80:80 front-end-image'
-
-                    // Deploy the back-end container
-                    sh 'docker run -d -p 8080:8080 back-end-image'
-                }
+                sh 'docker run -d -p 80:80 za-front-end-image'
+                sh 'docker run -d -p 81:81 za-back-end-image'
             }
         }
     }
