@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  front-end:
+    image: zuhaibali/sprint-front-end
+    build:
+      context: ./lbg-car-react-starter
+    ports:
+     - target: 80
+       published: 80
+  back-end:
+    image: zuhaibali/sprint-back-end
+    build:
+      context: ./lbg-car-sprint-app-starter
+    ports:
+     - target: 80
+       published: 8000
